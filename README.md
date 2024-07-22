@@ -2,7 +2,7 @@
 ## About Opt_PredLLPS
 We develop a two-task predictor named Opt_PredLLPS for discovering potential phase separation proteins and further judge its mechanism. The first task model of Opt_PredLLPS is based on the combination of CNN and BiLSTM through fully connected layer, in which CNN uses evolutionary information features as input, and BiLSTM uses multimodal features as input, respectively. If a protein is predicted as a PS protein, then it is input into the second task model to predict whether this protein interact with partners to undergo PS. The second task model is based on XGBoost classification algorithm and 37 physicochemical properties after 3-step feature selection.
 
-The datasets can be found in `./datasets/`. The Opt_PredLLPS models is available in `./model/`. The prediction code can be found in` Opt_PredLLPS.py, Opt_PredLLPS_Self.py, Opt_PredLLPS_Part.py.`
+The datasets can be found in `./datasets/`. The Opt_PredLLPS models is available in `./model/`. The prediction code can be found in` Opt_PredLLPS.py, Opt_PredLLPS_Self.py and Opt_PredLLPS_Part.py.`
 
 ## Tools<bar>
 The pssm feature is obtained from POSSUM. Please ensure that the fasta file submitted to POSSUM is the same as the fasta file submitted this time. POSSUM's web site is https://possum.erc.monash.edu.
