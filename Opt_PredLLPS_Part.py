@@ -67,7 +67,7 @@ def test(args):
     results = np.array(results)
     results = results.T
     results = pd.DataFrame(results, columns=['Description', 'Sequence',  'Opt_PredLLPS_Part score'])
-    results.to_csv('Opt_PredLLPS_Part predict results.csv', index=False, header=True, escapechar=',')
+    results.to_csv('Opt_PredLLPS_Part prediction results.csv', index=False, header=True, escapechar=',')
 
 
 if __name__ == '__main__':

@@ -65,7 +65,7 @@ def test(args):
     results = np.array(results)
     results = results.T
     results = pd.DataFrame(results, columns=['Description', 'Sequence',  'Opt_PredLLPS_Self score'])
-    results.to_csv('Opt_PredLLPS_Self predict results.csv', index=False, header=True, escapechar=',')
+    results.to_csv('Opt_PredLLPS_Self prediction results.csv', index=False, header=True, escapechar=',')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
