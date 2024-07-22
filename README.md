@@ -11,7 +11,7 @@ The pssm feature is obtained from POSSUM. Please ensure that the fasta file subm
 >2.The number of sequences submitted is within 500.<br>
 >3.Submit A sequence of one and only 20 kinds of amino acids, including 'A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'Y'.<br>
 <br>
-HMM features requires a multiple sequence alignment tools and a database. Code for generating HMM features is located in `./utils/hhblits_search`
+HMM features requires a multiple sequence alignment tools and a database. Code for generating HMM features is located in ./utils/hhblits_search
 
 >1.hhblits: It is an efficient protein sequence alignment tool that can quickly search homologous sequences in large databases.<br>
 >2.uniclust30_2018_08: You can download it dababase from `https://wwwuser.gwdg.de/~compbiol/uniclust/2018_08/uniclust30_2018_08_hhsuite.tar.gz `.<br>
@@ -40,7 +40,7 @@ HMM features requires a multiple sequence alignment tools and a database. Code f
 • Interpreting Scores: If scores of a protein are high (>=0.5), it is considered a PS-Part protein.<br>
 
 ## example
-Simply run:<bar>
-`python Opt_PredLLPS.py --input_fasta_file test/9 proteins/test.fasta`<br>
+Simply run:<br>
+ `python Opt_PredLLPS.py --input_fasta_file test/9 proteins/test.fasta`<br>
 And the prediction results will be saved in<br>
-`Opt_PredLLPS prediction results.csv`.
+ `Opt_PredLLPS prediction results.csv`.
