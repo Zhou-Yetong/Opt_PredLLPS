@@ -73,7 +73,6 @@ def test(args):
         y_pre_LLPS.append(i[0])
     print(y_pre_LLPS)
 
-
     #the second task model
     ##Physicochemical_features
     data3 = load_data_Physicochemical(inputfile)
@@ -89,12 +88,9 @@ def test(args):
     results = pd.DataFrame(results, columns=['Description', 'Sequence', 'the first task score', 'the second task score'])
     results.to_csv('Opt_PredLLPS predict results.csv', index=False, header=True, escapechar=',')
 
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-
     parser.add_argument('-input_fasta_file', type=str, default='test/9 proteins/test.fasta',help='Path of the input_fasta_file')
-
     args = parser.parse_args()
     start_time = datetime.datetime.now()
     print('******test******')
