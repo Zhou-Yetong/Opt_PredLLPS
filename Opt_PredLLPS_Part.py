@@ -1,53 +1,40 @@
 import numpy as np
+import pandas as pd
+import re
 from utils.data_processing import load_data
 from utils.Feature import load_multimodal_features
 from tensorflow.keras import models
 import argparse
-import math
-from sklearn.metrics import roc_auc_score
 import datetime
 import warnings
 warnings.filterwarnings("ignore")
 
-
-def Twoclassfy_evalu(y_test, y_predict):
-    TP = 0
-    TN = 0
-    FP = 0
-    FN = 0
-    FP_index = []
-    FN_index = []
-    for i in range(len(y_test)):
-        if y_predict[i] > 0.5 and y_test[i] == 1:
-            TP += 1
-        if y_predict[i] > 0.5 and y_test[i] == 0:
-            FP += 1
-            FP_index.append(i)
-        if y_predict[i] < 0.5 and y_test[i] == 1:
-            FN += 1
-            FN_index.append(i)
-        if y_predict[i] < 0.5 and y_test[i] == 0:
-            TN += 1
-    Sn = TP / (TP + FN)
-    Sp = TN / (FP + TN)
-    Pre = TP / (TP + FP)
-    MCC = (TP * TN - FP * FN) / math.sqrt((TN + FN) * (FP + TN) * (TP + FN) * (TP + FP))
-    Acc = (TP + TN) / (TP + FP + TN + FN)
-    F1 = (2 * Pre * Sn) / (Pre + Sn)
-    auc = roc_auc_score(y_test, y_predict)
-    return Sn, Sp, Acc, MCC,auc,Pre,F1,TP,TN,FP,FN
+def load_seqs(fn):
+    ids = []
+    seqs = []
+    t = 0
+    pattern = re.compile('[^ARNDCQEGHILKMFPSTWYV]')
+    with open(fn, 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            line = line.strip()
+            if line[0] == '>':
+                t = line.replace('|', '_')
+            elif len(pattern.findall(line)) == 0:
+                seqs.append(line)
+                ids.append(t[1:])
+                t = 0
+    return ids,seqs
 
 seed = 7
 np.random.seed(seed)
 
 def test(args):
+    inputfile = args.input_fasta_file
+    id, seq = load_seqs(inputfile)
+
     # evolutionary information features
-    positive = args.pos_test
-    test, labels = load_data(positive, 1)
-    negative = args.neg_test
-    neg_test = load_data(negative, 0)
-    test.extend(neg_test[0])
-    labels = np.concatenate((labels, neg_test[1]), axis=0)
+    test, labels = load_data(inputfile,1)
     a = [0 for col in range(40)]
     Test = []
     for i in range(len(labels)):
@@ -63,38 +50,32 @@ def test(args):
     x1 = X_Test.reshape(X_Test.shape[0], X_Test.shape[1],X_Test.shape[2])
 
     # multimodal features
-    data_list1 = load_multimodal_features(positive)
-    neg_data1 = load_multimodal_features(negative)
-    data_list1.extend(neg_data1)
+    data_list1 = load_multimodal_features(inputfile)
     x2_Test = np.array(data_list1)
     print(x2_Test.shape)
     x2 = x2_Test.reshape(x2_Test.shape[0], x2_Test.shape[1], 1)
 
-    model=models.load_model("model/Opt_PredLLPS_Part.h5")#COMPhase_PHPA3
-    y_predict = model.predict([x1,x2])
-    (SN, SP, ACC, MCC, AUC,Pre,F1,TP,TN,FP,FN) = Twoclassfy_evalu(y, y_predict)
 
-    print('TP:', TP)
-    print('FN:', FN)
-    print('TN:', TN)
-    print('FP:', FP)
-    print('SN:', '%.2f'%SN)
-    print('SP:', '%.2f'%SP)
-    print('ACC:', '%.2f'%ACC)
-    print('MCC:', '%.2f'%MCC)
-    print('Pre', '%.2f'%Pre)
-    print('F1_score', '%.2f'%F1)
-    print('AUC:', '%.2f'%AUC)
+    model=models.load_model("model/Opt_PredLLPS_Part.h5")
+    y_predict = model.predict([x1,x2])
+    y_pre_Part = []
+    for i in y_predict:
+        y_pre_Part.append(i[0])
+    print(y_pre_Part)
+
+    results = [id,seq, y_pre_Part]
+    results = np.array(results)
+    results = results.T
+    results = pd.DataFrame(results, columns=['Description', 'Sequence',  'Opt_PredLLPS_Part score'])
+    results.to_csv('Opt_PredLLPS_Part predict results.csv', index=False, header=True, escapechar=',')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-# test/Ind_Test_II\P/Ind_Test_II_P.fasta  test/PdPS_test/P/PdPS_P.fasta
-    parser.add_argument('-pos_test', type=str, default='test/PdPS_test/P/PdPS_P.fasta',
-                        help='Path of the positive training dataset')
-# test/Ind_Test_II/N/Ind_Test_II_N.fasta  test/PdPS_test/N/PdPS_N.fasta
-    parser.add_argument('-neg_test', type=str, default='test/PdPS_test/N/PdPS_N.fasta',
-                        help='Path of the negative training dataset')
+
+    parser.add_argument('-input_fasta_file', type=str, default='test/Ind_Test_II/Ind_Test_II.fasta',
+                        help='Path of the input_fasta_file')
+
     args = parser.parse_args()
     start_time = datetime.datetime.now()
     print('******test******')

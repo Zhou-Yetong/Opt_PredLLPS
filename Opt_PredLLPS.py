@@ -39,13 +39,13 @@ def load_data_Physicochemical(fasta_path):
     return Feature
 
 
-# # 独立测试
+
 def test(args):
     inputfile = args.input_fasta_file
     id, seq = load_seqs(inputfile)
 
-#the first task model
-    #evolutionary information features
+    #the first task model
+    ##evolutionary information features
     data, labels = load_data(inputfile, 1)
     a = [0 for col in range(40)]
     Test = []
@@ -60,7 +60,7 @@ def test(args):
     print(X_Test.shape)
     x1 = X_Test.reshape(X_Test.shape[0], X_Test.shape[1],X_Test.shape[2])
 
-    # multimodal features
+    ## multimodal features
     data2 = load_multimodal_features(inputfile)
     x2_Test = np.array(data2)
     print(x2_Test.shape)
@@ -74,8 +74,8 @@ def test(args):
     print(y_pre_LLPS)
 
 
-#the second task model
-    #Physicochemical_features
+    #the second task model
+    ##Physicochemical_features
     data3 = load_data_Physicochemical(inputfile)
     x3_Test = np.array(data3, dtype=object)
     print(x3_Test.shape)
